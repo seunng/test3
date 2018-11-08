@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SQL.COMPUTER">
+	<select id="selectDate" resultType="map">
+		select to_char(sysdate, 'YYYY-MM-DD') from dual
+	</select>
+
+	<select id="selectComputerInfoList" resultType="ci" parameterType="ci">
+		select * from computer_info
+		<if test="cino!=null">	where cino = #{cino}</if>
+		
+		<if test="ciname!=null">where ciname like '%' || #{ciname} || '%'</if>
+		<if test="cipower!=null">where cipower like '%' || #{cipower} || '%'</if>
+		<if test="cimb!=null">where cimb like '%' || #{cimb} || '%'</if>
+		<if test="cicpu!=null">where cicpu like '%' || #{cicpu} || '%'</if>
+		<if test="ciram!=null">where ciram like '%' || #{ciram} || '%'</if>
+		<if test="civga!=null">where civga like '%' || #{civga} || '%'</if>
+		<if test="cihdd!=null">where cihdd like '%' || #{cihdd} || '%'</if>
+		<if test="cissd!=null">where cissd like '%' || #{cissd} || '%'</if>
+		<if test="cicase!=null">where cicase like '%' || #{cicase} || '%'</if>
+		<if test="ciodd!=null">where ciodd like '%' || #{ciodd} || '%'</if>
+		
+		order by cino desc
+	</select>
+	
+	<insert id="insertComputerInfo" parameterType="ci">
+		insert into computer_info values
+		(seq_computer.nextval, #{ciname}, #{cipower}, #{cicpu},
+		#{cimb}, #{ciram}, #{civga}, #{cihdd}, #{cissd}, #{ciodd}, #{cicase}, #{ciimg})
+	</insert>
+	
+	<delete id="deleteComputerInfo" parameterType="Integer">
+		delete from computer_info where cino=#{cino}
+	</delete>
+	
+	<update id="updateComputerInfo" parameterType="ci">
+	update computer_info
+	<set>
+		<if test="ciname!=null">ciname = #{ciname},</if>
+		<if test="cipower!=null">cipower = #{cipower},</if>
+		<if test="cicpu!=null">cicpu = #{cicpu},</if>
+		<if test="cimb!=null">cimb = #{cimb},</if>
+		<if test="ciram!=null">ciram = #{ciram},</if>
+		<if test="civga!=null">civga = #{civga},</if>
+		<if test="cihdd!=null">cihdd = #{cihdd},</if>
+		<if test="cissd!=null">cissd = #{cissd},</if>
+		<if test="ciodd!=null">ciodd = #{ciodd},</if>
+		<if test="cicase!=null">cicase = #{cicase},</if>
+		<if test="ciimg!=null">ciimg = #{ciimg}</if>
+	</set>
+	where cino=#{cino}
+	</update>
+	
+	<select id="selectImg" resultType="String" parameterType="ci">
+		select ciimg from computer_info
+		where cino = #{cino}
+	</select>
+	
+	<select id="selectRecent" resultType="ci">
+		select ci.*, rownum from 
+		(select * from COMPUTER_INFO order by cino desc) ci 
+		where rownum &gt;= 1 and rownum &lt;= 2
+	</select>
+	
+</mapper>
